@@ -1,3 +1,6 @@
+from commands import command_map
+
+
 def cli_loop():
     try:
         while True:
@@ -5,8 +8,8 @@ def cli_loop():
             if not user_line:
                 continue
             cmd, *args = user_line.split()
+            if cmd in command_map:
+                command_map[cmd](*args)
 
-            print(f"cmd {cmd}")
-            print(f"args {args}")
     except KeyboardInterrupt:
         print("Exiting...")
