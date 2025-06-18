@@ -12,3 +12,11 @@ class DriveClient:
         )
         items = results.get("files", [])
         return items
+
+    def create_dir(self, dir_name, folder_id="root"):
+        file_metadata = {
+            "name": dir_name,
+            "mimeType": "application/vnd.google-apps.folder",
+        }
+        folder = self.service.files().create(body=file_metadata, fields="id").execute()
+        return folder.get("id")
