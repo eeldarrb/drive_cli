@@ -1,3 +1,4 @@
+import shlex
 from commands import command_map
 from auth.google_auth import get_auth_service
 from services.drive_client import DriveClient
@@ -11,7 +12,7 @@ def cli_loop():
             if not user_line:
                 continue
 
-            cmd, *args = user_line.split()
+            cmd, *args = shlex.split(user_line)
             if cmd in command_map:
                 handler = command_map[cmd]
                 handler(client, *args)

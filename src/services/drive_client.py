@@ -20,3 +20,18 @@ class DriveClient:
         }
         folder = self.service.files().create(body=file_metadata, fields="id").execute()
         return folder.get("id")
+
+    def delete_item(self, name):
+        # Abstract name to id conversion into util function
+        files = self.list_items()
+        match = None
+        for file in files:
+            if file["name"] == name:
+                match = file
+        body_value = {"trashed": True}
+        if match:
+            self.service.files().update(
+                fileId=match.get("id"), body=body_value
+            ).execute()
+        else:
+            print(f"File Not Found: {name}")
