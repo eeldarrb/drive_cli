@@ -1,3 +1,7 @@
+import io
+from googleapiclient.http import MediaIoBaseDownload
+
+
 class DriveClient:
     def __init__(self, service):
         self.service = service()
@@ -22,7 +26,7 @@ class DriveClient:
         return folder.get("id")
 
     def delete_item(self, name):
-        # Abstract name to id conversion into util function
+        # TODO: Abstract name to id conversion into util function
         files = self.list_items()
         match = None
         for file in files:
@@ -35,3 +39,21 @@ class DriveClient:
             ).execute()
         else:
             print(f"File Not Found: {name}")
+
+    # TODO: Download directory/multiple files?
+    def download_file(self, name):
+        # TODO: Abstract name to id conversion into util function
+        files = self.list_items()
+        match = None
+        for file in files:
+            if file["name"] == name:
+                match = file
+        if match:
+            req = self.service.files().get_media(fileId=match.get("id"))
+            fh = io.FileIO(name, mode="wb")
+            downloader = MediaIoBaseDownload(fh, req)
+
+            done = False
+            while not done:
+                status, done = downloader.next_chunk()
+                print(f"Downloading {name}: {status.progress() * 100}%")
