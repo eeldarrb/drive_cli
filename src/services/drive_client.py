@@ -51,11 +51,19 @@ class DriveClient:
             if file["name"] == name:
                 match = file
         if match:
+            file_id = match.get("id")
             download_path = os.path.join(user_downloads_dir(), name)
-            req = self.service.files().get_media(fileId=match.get("id"))
             fh = io.FileIO(download_path, mode="wb")
-            downloader = MediaIoBaseDownload(fh, req)
 
+            # File is a Google Workspace document
+            if "vnd.google-apps" in match.get("mimeType"):
+                req = self.service.files().export_media(
+                    fileId=file_id, mimeType="application/pdf"
+                )
+            else:
+                req = self.service.files().get_media(fileId=file_id)
+
+            downloader = MediaIoBaseDownload(fh, req)
             done = False
             while not done:
                 status, done = downloader.next_chunk()
