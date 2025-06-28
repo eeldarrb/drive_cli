@@ -1,4 +1,6 @@
 import io
+import os
+from platformdirs import user_downloads_dir
 from googleapiclient.http import MediaIoBaseDownload
 
 
@@ -49,8 +51,9 @@ class DriveClient:
             if file["name"] == name:
                 match = file
         if match:
+            download_path = os.path.join(user_downloads_dir(), name)
             req = self.service.files().get_media(fileId=match.get("id"))
-            fh = io.FileIO(name, mode="wb")
+            fh = io.FileIO(download_path, mode="wb")
             downloader = MediaIoBaseDownload(fh, req)
 
             done = False
