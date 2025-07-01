@@ -1,7 +1,8 @@
 import io
 import os
+import mimetypes
 from platformdirs import user_downloads_dir
-from googleapiclient.http import MediaIoBaseDownload
+from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 
 
 class DriveClient:
@@ -68,3 +69,21 @@ class DriveClient:
             while not done:
                 status, done = downloader.next_chunk()
                 print(f"Downloading {name}: {status.progress() * 100}%")
+
+    def upload_file(self, file_path):
+        file_type, _ = mimetypes.guess_file_type(file_path)
+        file_name = os.path.basename(file_path)
+        file_metadata = {"name": file_name}
+
+        # TODO: allow tab completion for file uploading?
+        media = MediaFileUpload(file_path, mimetype=file_type)
+        uploaded_file = (
+            self.service.files()
+            .create(
+                body=file_metadata,
+                media_body=media,
+            )
+            .execute()
+        )
+        if uploaded_file:
+            print(f"Successfully uploaded file: {uploaded_file.get('name')}")
