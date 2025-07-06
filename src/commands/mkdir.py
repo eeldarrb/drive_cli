@@ -1,3 +1,5 @@
-def handle_mkdir(drive_client, *args):
-    created_folder = drive_client.create_dir(*args)
+def handle_mkdir(session, *args):
+    client = session.client
+
+    created_folder = client.create_dir(*args)
     print(created_folder)

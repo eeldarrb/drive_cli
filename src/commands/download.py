@@ -1,2 +1,4 @@
-def handle_download(drive_client, *args):
-    drive_client.download_file(*args)
+def handle_download(session, *args):
+    client = session.client
+
+    client.download_file(*args)

@@ -1,2 +1,4 @@
-def handle_upload(drive_client, *args):
-    drive_client.upload_file(*args)
+def handle_upload(session, *args):
+    client = session.client
+
+    client.upload_file(*args)

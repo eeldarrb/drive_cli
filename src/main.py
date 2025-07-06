@@ -1,5 +1,6 @@
-from session import cli_loop
+from session import Session
 
 
 if __name__ == "__main__":
-    cli_loop()
+    session = Session()
+    session.cli_loop()

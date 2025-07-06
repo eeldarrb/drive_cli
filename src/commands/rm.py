@@ -1,2 +1,4 @@
-def handle_rm(drive_client, *args):
-    drive_client.delete_item(*args)
+def handle_rm(session, *args):
+    client = session.client
+
+    client.delete_item(*args)
