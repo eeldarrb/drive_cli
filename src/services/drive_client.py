@@ -10,6 +10,30 @@ class DriveClient:
     def __init__(self, service):
         self.service = service()
 
+    def get_root_id(self):
+        root_id = self.service.files().get(fileId="root").execute()["id"]
+        return root_id
+
+    def list_all_items(self):
+        items_list = []
+        page_token = None
+        while True:
+            results = (
+                self.service.files()
+                .list(
+                    q="trashed = false",
+                    fields="nextPageToken, files(id, name, mimeType, parents)",
+                    pageSize=1000,
+                    pageToken=page_token,
+                )
+                .execute()
+            )
+            items = results.get("files", [])
+            items_list.extend(items)
+            if not page_token:
+                break
+        return items_list
+
     def list_folder_items(self, folder_id="root"):
         if folder_id == "root":
             q = "'root' in parents and trashed = false"
