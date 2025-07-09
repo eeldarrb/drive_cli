@@ -52,6 +52,7 @@ class DriveClient:
         file_metadata = {
             "name": dir_name,
             "mimeType": "application/vnd.google-apps.folder",
+            "parents": [folder_id],
         }
         folder = self.service.files().create(body=file_metadata, fields="id").execute()
         return folder.get("id")
