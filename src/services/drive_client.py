@@ -21,15 +21,15 @@ class DriveClient:
             results = (
                 self.service.files()
                 .list(
-                    q="trashed = false",
+                    q="trashed=false",
                     fields="nextPageToken, files(id, name, mimeType, parents)",
-                    pageSize=1000,
                     pageToken=page_token,
                 )
                 .execute()
             )
             items = results.get("files", [])
             items_list.extend(items)
+            page_token = results.get("nextPageToken")
             if not page_token:
                 break
         return items_list
