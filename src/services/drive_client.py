@@ -44,7 +44,6 @@ class DriveClient:
             .list(q=q, fields="files(id, name, mimeType, parents)")
             .execute()
         )
-        print(results)
         items = results.get("files", [])
         return items
 
@@ -54,8 +53,12 @@ class DriveClient:
             "mimeType": "application/vnd.google-apps.folder",
             "parents": [folder_id],
         }
-        folder = self.service.files().create(body=file_metadata, fields="id").execute()
-        return folder.get("id")
+        folder = (
+            self.service.files()
+            .create(body=file_metadata, fields="id, name, mimeType")
+            .execute()
+        )
+        return folder
 
     def delete_item(self, item_name):
         item = get_item_by_name(self, item_name)
