@@ -1,5 +1,4 @@
-def handle_cd(session, *args):
-    folder_name = args[0]
+def handle_cd(session, folder_name):
     for item in session.cwd.children:
         if (
             item.name == folder_name

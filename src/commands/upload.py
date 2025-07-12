@@ -1,4 +1,4 @@
-def handle_upload(session, *args):
+def handle_upload(session, item_name):
     client = session.client
 
-    client.upload_file(*args)
+    client.upload_file(item_name)

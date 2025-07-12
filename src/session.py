@@ -15,14 +15,20 @@ class Session:
         try:
             while True:
                 user_line = input("> ").strip()
-
                 if not user_line:
                     continue
+
                 cmd, *args = shlex.split(user_line)
-                if cmd in command_map:
-                    handler = command_map[cmd]
-                    handler(self, *args)
-                else:
+                cmd_info = command_map.get(cmd)
+                if not cmd_info:
                     print(f"drive_cli: command not found: {cmd}")
+                    continue
+
+                expected_args = cmd_info.get("args", [])
+                handler = cmd_info.get("handler")
+                if handler:
+                    kwargs = dict(zip(expected_args, args))
+                    handler(self, **kwargs)
+
         except KeyboardInterrupt:
             print("\nExiting...")

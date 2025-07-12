@@ -1,4 +1,4 @@
-def handle_rm(session, *args):
+def handle_rm(session, item_name):
     client = session.client
 
-    client.delete_item(*args)
+    client.delete_item(item_name)

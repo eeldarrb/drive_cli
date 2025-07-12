@@ -1,9 +1,8 @@
 from drive_tree.drive_node import DriveNode
 
 
-def handle_mkdir(session, *args):
+def handle_mkdir(session, folder_name):
     client = session.client
-    folder_name = args[0]
     curr_dir = session.cwd
 
     created_folder = client.create_dir(folder_name, curr_dir.id)

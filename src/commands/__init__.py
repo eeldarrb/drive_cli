@@ -7,11 +7,11 @@ from .mkdir import handle_mkdir
 from .cd import handle_cd
 
 command_map = {
-    "cd": handle_cd,
-    "ls": handle_ls,
-    "clear": lambda _: handle_clear(),
-    "mkdir": handle_mkdir,
-    "rm": handle_rm,
-    "download": handle_download,
-    "upload": handle_upload,
+    "cd": {"handler": handle_cd, "args": ["folder_name"]},
+    "ls": {"handler": handle_ls, "args": []},
+    "clear": {"handler": handle_clear, "args": []},
+    "mkdir": {"handler": handle_mkdir, "args": ["folder_name"]},
+    "rm": {"handler": handle_rm, "args": ["item_name"]},
+    "download": {"handler": handle_download, "args": ["item_name"]},
+    "upload": {"handler": handle_upload, "args": ["item_name"]},
 }
