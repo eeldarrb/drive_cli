@@ -12,3 +12,7 @@ class DriveNode:
     def add_child(self, child_node):
         self.children.append(child_node)
         child_node.parent = self
+
+    def remove_child(self, child_node):
+        self.children.remove(child_node)
+        child_node.parent = None
