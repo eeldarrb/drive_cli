@@ -20,11 +20,18 @@ class Session:
 
                 cmd, *args = shlex.split(user_line)
                 cmd_info = command_map.get(cmd)
+                # TODO: add fuzzy match suggestion message for commands?
                 if not cmd_info:
-                    print(f"drive_cli: command not found: {cmd}")
+                    print(f"Command not found: {cmd}")
                     continue
 
                 expected_args = cmd_info.get("args", [])
+
+                if len(args) != len(expected_args):
+                    usage = cmd_info.get("usage")
+                    print(f"Usage: {cmd} {usage}")
+                    continue
+
                 handler = cmd_info.get("handler")
                 if handler:
                     kwargs = dict(zip(expected_args, args))
