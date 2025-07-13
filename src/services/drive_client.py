@@ -3,7 +3,6 @@ import os
 import mimetypes
 from platformdirs import user_downloads_dir
 from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
-from .drive_utils import get_item_by_name
 
 
 class DriveClient:
@@ -60,38 +59,33 @@ class DriveClient:
         )
         return folder
 
-    def delete_item(self, item_name):
-        item = get_item_by_name(self, item_name)
+    def delete_item(self, item_id):
         body_value = {"trashed": True}
-
-        if item:
-            self.service.files().update(
-                fileId=item.get("id"), body=body_value
-            ).execute()
-        else:
-            print(f"Item Not Found: {item_name}")
+        deleted_item = (
+            self.service.files()
+            .update(fileId=item_id, body=body_value, fields="id, name, mimeType")
+            .execute()
+        )
+        return deleted_item
 
     # TODO: Download directory/multiple files?
-    def download_file(self, file_name):
-        item = get_item_by_name(self, file_name)
+    def download_file(self, item_id, item_name, item_mimetype):
+        download_path = os.path.join(user_downloads_dir(), item_name)
+        fh = io.FileIO(download_path, mode="wb")
 
-        if item:
-            download_path = os.path.join(user_downloads_dir(), file_name)
-            fh = io.FileIO(download_path, mode="wb")
+        # File is a Google Workspace document
+        if "vnd.google-apps" in item_mimetype:
+            req = self.service.files().export_media(
+                fileId=item_id, mimeType="application/pdf"
+            )
+        else:
+            req = self.service.files().get_media(fileId=item_id)
 
-            # File is a Google Workspace document
-            if "vnd.google-apps" in item.get("mimeType"):
-                req = self.service.files().export_media(
-                    fileId=item.get("id"), mimeType="application/pdf"
-                )
-            else:
-                req = self.service.files().get_media(fileId=item.get("id"))
-
-            downloader = MediaIoBaseDownload(fh, req)
-            done = False
-            while not done:
-                status, done = downloader.next_chunk()
-                print(f"Downloading {item.get('name')}: {status.progress() * 100}%")
+        downloader = MediaIoBaseDownload(fh, req)
+        done = False
+        while not done:
+            status, done = downloader.next_chunk()
+            print(f"Downloading {item_name}: {status.progress() * 100}%")
 
     def upload_file(self, file_path):
         file_type, _ = mimetypes.guess_file_type(file_path)
