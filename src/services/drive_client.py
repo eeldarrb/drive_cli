@@ -84,8 +84,8 @@ class DriveClient:
         downloader = MediaIoBaseDownload(fh, req)
         done = False
         while not done:
-            status, done = downloader.next_chunk()
-            print(f"Downloading {item_name}: {status.progress() * 100}%")
+            _, done = downloader.next_chunk()
+        return done
 
     def upload_file(self, file_path, target_dir_id):
         file_type, _ = mimetypes.guess_file_type(file_path)
