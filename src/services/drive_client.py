@@ -87,10 +87,10 @@ class DriveClient:
             status, done = downloader.next_chunk()
             print(f"Downloading {item_name}: {status.progress() * 100}%")
 
-    def upload_file(self, file_path):
+    def upload_file(self, file_path, target_dir_id):
         file_type, _ = mimetypes.guess_file_type(file_path)
         file_name = os.path.basename(file_path)
-        file_metadata = {"name": file_name}
+        file_metadata = {"name": file_name, "parents": [target_dir_id]}
 
         # TODO: allow tab completion for file uploading?
         media = MediaFileUpload(file_path, mimetype=file_type)
@@ -102,5 +102,4 @@ class DriveClient:
             )
             .execute()
         )
-        if uploaded_file:
-            print(f"Successfully uploaded file: {uploaded_file.get('name')}")
+        return uploaded_file

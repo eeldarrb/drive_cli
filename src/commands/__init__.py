@@ -21,5 +21,5 @@ command_map = {
         "args": ["item_name"],
         "usage": "<item_name>",
     },
-    "upload": {"handler": handle_upload, "args": ["item_name"], "usage": "item_name"},
+    "upload": {"handler": handle_upload, "args": ["file_path"], "usage": "<file_path>"},
 }
