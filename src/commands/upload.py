@@ -3,10 +3,10 @@ from googleapiclient.http import HttpError
 
 
 def handle_upload(session, file_path):
-    client = session.client
-    curr_dir = session.cwd
-
     try:
+        client = session.client
+        curr_dir = session.cwd
+
         uploaded_item = client.upload_file(file_path, curr_dir.id)
         uploaded_item_node = DriveNode(
             uploaded_item.get("id"),
@@ -17,3 +17,5 @@ def handle_upload(session, file_path):
         print(f"Successfully uploaded: {uploaded_item.get('name')}")
     except HttpError as e:
         print(f"Failed to upload: {e}")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
