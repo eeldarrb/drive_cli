@@ -13,6 +13,6 @@ def handle_download(session, item_name):
 
         client.download_file(item.id, item.name, item.mime_type)
     except HttpError as e:
-        print(f"Failed to download {item_name}: {e}")
+        print(f"[Drive API Error] Failed to download {item_name}: {e}")
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        print(f"[Unexpected Error] Command 'download' failed: {e}")

@@ -1,3 +1,4 @@
+import os
 from drive_tree.drive_node import DriveNode
 from googleapiclient.http import HttpError
 
@@ -16,6 +17,6 @@ def handle_upload(session, file_path):
         curr_dir.add_child(uploaded_item_node)
         print(f"Successfully uploaded: {uploaded_item.get('name')}")
     except HttpError as e:
-        print(f"Failed to upload: {e}")
+        print(f"[Drive API Error] Failed to upload {os.path.basename(file_path)}: {e}")
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        print(f"[Unexpected Error] Command 'upload' failed: {e}")

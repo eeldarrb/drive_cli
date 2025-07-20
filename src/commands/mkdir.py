@@ -15,6 +15,6 @@ def handle_mkdir(session, folder_name):
         )
         curr_dir.add_child(new_dir)
     except HttpError as e:
-        print(f"Failed to create dir {folder_name}: {e}")
+        print(f"[Drive API Error] Failed to create dir {folder_name}: {e}")
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        print(f"[Unexpected Error] Command 'mkdir' failed: {e}")

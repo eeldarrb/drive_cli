@@ -9,4 +9,4 @@ def handle_cd(session, folder_name):
                 return
         print(f"No such directory: {folder_name}")
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        print(f"[Unexpected Error] Command 'cd' failed: {e}")
