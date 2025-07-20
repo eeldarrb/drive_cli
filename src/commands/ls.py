@@ -1,3 +1,6 @@
 def handle_ls(session):
-    for item in session.cwd.children:
-        print(item.name)
+    try:
+        for item in session.cwd.children:
+            print(item.name)
+    except Exception as e:
+        print(f"Unexpected error: {e}")
