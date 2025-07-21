@@ -6,4 +6,4 @@ def handle_cd(session, folder_name):
         ):
             session.cwd = item
             return
-    print(f"No such directory: {folder_name}")
+    raise FileNotFoundError(folder_name)

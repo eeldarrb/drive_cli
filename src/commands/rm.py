@@ -7,13 +7,9 @@ def handle_rm(session, item_name):
 
     item = tree_utils.get_item_by_name(session, item_name)
     if not item:
-        print(f"no such item: {item_name}")
-        return
+        raise FileNotFoundError(item_name)
 
-    deleted_item = client.delete_item(item.id)
-    if not deleted_item:
-        print(f"failed to delete: {item_name}")
-        return
+    client.delete_item(item.id)
 
     for node in curr_dir.children:
         if node.name == item_name:

@@ -6,10 +6,6 @@ def handle_download(session, item_name):
 
     item = tree_utils.get_item_by_name(session, item_name)
     if not item:
-        print(f"No such item: {item_name}")
-        return
+        raise FileNotFoundError(item_name)
 
-    download_success = client.download_file(item.id, item.name, item.mime_type)
-    if not download_success:
-        print(f"Failed to download: {item_name}")
-        return
+    client.download_file(item.id, item.name, item.mime_type)
