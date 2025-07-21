@@ -43,5 +43,5 @@ class Session:
                     kwargs = dict(zip(expected_args, args))
                     handler(self, **kwargs)
 
-        except KeyboardInterrupt:
-            print("\nExiting.")
+        except Exception:
+            raise RuntimeError("Encountered an issue during runtime")
