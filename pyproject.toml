@@ -17,3 +17,13 @@ dev = [
     "pyright>=1.1.403",
     "ruff>=0.12.5",
 ]
+
+[tool.pyright]
+typeCheckingMode = "standard"
+exclude = [".venv/", "__pycache__/"]
+venv = ".venv"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "tab"
+docstring-code-format = true
