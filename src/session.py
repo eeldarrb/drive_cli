@@ -1,4 +1,5 @@
 import shlex
+from http import HTTPStatus
 from commands import command_map
 from auth.google_auth import get_auth_service
 from drive_tree.drive_tree import build_drive_tree
@@ -52,8 +53,9 @@ class Session:
                 except FileNotFoundError as e:
                     print(f"[Not Found] Command '{cmd}': No such item: {e}")
                 except HttpError as e:
+                    error_code = e.status_code
                     print(
-                        f"[Drive HTTP Error] Command '{cmd}': API responded with status: {e.status_code}"
+                        f"[API Error] Command '{cmd}': Server responded with an error: {error_code} {HTTPStatus(error_code).phrase}"
                     )
                 except Exception as e:
                     print(f"[Unexpected Error] Command '{cmd}': {e}")
