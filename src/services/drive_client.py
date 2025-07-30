@@ -15,20 +15,22 @@ class DriveClient:
         root_id = self.service.files().get(fileId="root").execute()["id"]
         return root_id
 
-    @retry_on_http_error()
     def list_all_items(self):
         items_list = []
         page_token = None
+
         while True:
-            results = (
-                self.service.files()
-                .list(
-                    q="trashed=false",
-                    fields="nextPageToken, files(id, name, mimeType, parents)",
-                    pageToken=page_token,
-                )
-                .execute()
+            request = self.service.files().list(
+                q="trashed=false",
+                fields="nextPageToken, files(id, name, mimeType, parents)",
+                pageToken=page_token,
             )
+
+            @retry_on_http_error()
+            def fetchPage():
+                return request.execute()
+
+            results = fetchPage()
             items = results.get("files", [])
             items_list.extend(items)
             page_token = results.get("nextPageToken")
