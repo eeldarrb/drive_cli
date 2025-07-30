@@ -1,9 +1,8 @@
 import time
 import functools
-from googleapiclient.http import HttpError
 
 
-def retry_on_http_error(max_attempts=2, delay=1):
+def retry_on_exception(max_attempts=2, delay=1):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
@@ -12,7 +11,7 @@ def retry_on_http_error(max_attempts=2, delay=1):
             while attempt < max_attempts:
                 try:
                     return func(*args, **kwargs)
-                except HttpError as e:
+                except Exception as e:
                     time.sleep(delay)
                     attempt += 1
                     http_err = e

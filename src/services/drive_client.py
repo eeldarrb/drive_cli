@@ -4,7 +4,7 @@ import mimetypes
 from platformdirs import user_downloads_dir
 from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 
-from .drive_client_utils import retry_on_http_error
+from utils.retry_on_exception import retry_on_exception
 
 
 class DriveClient:
@@ -26,7 +26,7 @@ class DriveClient:
                 pageToken=page_token,
             )
 
-            @retry_on_http_error()
+            @retry_on_exception()
             def fetchPage():
                 return request.execute()
 
@@ -38,7 +38,7 @@ class DriveClient:
                 break
         return items_list
 
-    @retry_on_http_error()
+    @retry_on_exception()
     def create_dir(self, dir_name, folder_id="root"):
         file_metadata = {
             "name": dir_name,
@@ -52,7 +52,7 @@ class DriveClient:
         )
         return folder
 
-    @retry_on_http_error()
+    @retry_on_exception()
     def delete_item(self, item_id):
         body_value = {"trashed": True}
         deleted_item = (
@@ -63,7 +63,7 @@ class DriveClient:
         return deleted_item
 
     # TODO: Download directory/multiple files?
-    @retry_on_http_error()
+    @retry_on_exception()
     def download_file(self, item_id, item_name, item_mimetype):
         download_path = os.path.join(user_downloads_dir(), item_name)
         fh = io.FileIO(download_path, mode="wb")
@@ -82,7 +82,7 @@ class DriveClient:
             _, done = downloader.next_chunk()
         return done
 
-    @retry_on_http_error()
+    @retry_on_exception()
     def upload_file(self, file_path, target_dir_id):
         file_type, _ = mimetypes.guess_file_type(file_path)
         file_name = os.path.basename(file_path)
