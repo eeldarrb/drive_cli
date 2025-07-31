@@ -39,17 +39,10 @@ class Session:
                         print(f"Did you mean '{best_match}'?")
                     continue
 
-                expected_args = cmd_info.get("args", [])
-                if len(args) != len(expected_args):
-                    usage = cmd_info.get("usage")
-                    print(f"Usage: {cmd} {usage}")
-                    continue
-
                 try:
                     handler = cmd_info.get("handler")
-                    kwargs = dict(zip(expected_args, args))
                     if handler:
-                        handler(self, **kwargs)
+                        handler(self, *args)
                 except FileNotFoundError as e:
                     print(f"[Not Found] Command '{cmd}': No such item: {e}")
                 except HttpError as e:
@@ -57,6 +50,8 @@ class Session:
                     print(
                         f"[API Error] Command '{cmd}': Server responded with an error: {error_code} {HTTPStatus(error_code).phrase}"
                     )
+                except SystemExit:
+                    continue
                 except Exception as e:
                     print(f"[Unexpected Error] Command '{cmd}': {e}")
 
