@@ -1,7 +1,13 @@
+import argparse
 from drive_tree import tree_utils
 
 
-def handle_rm(session, item_name):
+def handle_rm(session, *args):
+    parser = argparse.ArgumentParser(prog="rm")
+    parser.add_argument("item_name")
+    parsed = parser.parse_args(args)
+
+    item_name = parsed.item_name
     client = session.client
     curr_dir = session.cwd
 

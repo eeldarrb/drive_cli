@@ -1,8 +1,14 @@
 import os
+import argparse
 from drive_tree.drive_node import DriveNode
 
 
-def handle_upload(session, file_path):
+def handle_upload(session, *args):
+    parser = argparse.ArgumentParser(prog="upload")
+    parser.add_argument("item_name")
+    parsed = parser.parse_args(args)
+
+    file_path = parsed.item_name
     client = session.client
     curr_dir = session.cwd
 
