@@ -2,28 +2,28 @@ from .drive_node import DriveNode
 
 
 def build_drive_tree(client):
-    drive_items = client.list_all_items()
-    drive_nodes = build_node_map(drive_items)
+    drive_files = client.list_all_files()
+    drive_nodes = build_node_map(drive_files)
 
     root_id = client.get_root_id()
     root_node = DriveNode(root_id, "/", mime_type="application/vnd.google-apps.folder")
     drive_nodes[root_id] = root_node
 
-    link_nodes(drive_items, drive_nodes)
+    link_nodes(drive_files, drive_nodes)
     return root_node
 
 
-def build_node_map(items):
+def build_node_map(files):
     return {
-        item["id"]: DriveNode(item.get("id"), item.get("name"), item.get("mimeType"))
-        for item in items
+        file["id"]: DriveNode(file.get("id"), file.get("name"), file.get("mimeType"))
+        for file in files
     }
 
 
-def link_nodes(items, node_map):
-    for item in items:
-        node = node_map.get(item.get("id"))
-        parent_ids = item.get("parents", [])
+def link_nodes(files, node_map):
+    for file in files:
+        node = node_map.get(file.get("id"))
+        parent_ids = file.get("parents", [])
 
         for parent_id in parent_ids:
             parent_node = node_map.get(parent_id)

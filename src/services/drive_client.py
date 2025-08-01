@@ -15,8 +15,8 @@ class DriveClient:
         root_id = self.service.files().get(fileId="root").execute()["id"]
         return root_id
 
-    def list_all_items(self):
-        items_list = []
+    def list_all_files(self):
+        files_list = []
         page_token = None
 
         while True:
@@ -31,12 +31,12 @@ class DriveClient:
                 return request.execute()
 
             results = fetchPage()
-            items = results.get("files", [])
-            items_list.extend(items)
+            files = results.get("files", [])
+            files_list.extend(files)
             page_token = results.get("nextPageToken")
             if not page_token:
                 break
-        return items_list
+        return files_list
 
     @retry_on_exception()
     def create_dir(self, dir_name, folder_id="root"):
@@ -53,28 +53,28 @@ class DriveClient:
         return folder
 
     @retry_on_exception()
-    def delete_item(self, item_id):
+    def delete_file(self, file_id):
         body_value = {"trashed": True}
-        deleted_item = (
+        deleted_file = (
             self.service.files()
-            .update(fileId=item_id, body=body_value, fields="id, name, mimeType")
+            .update(fileId=file_id, body=body_value, fields="id, name, mimeType")
             .execute()
         )
-        return deleted_item
+        return deleted_file
 
     # TODO: Download directory/multiple files?
     @retry_on_exception()
-    def download_file(self, item_id, item_name, item_mimetype):
-        download_path = os.path.join(user_downloads_dir(), item_name)
+    def download_file(self, file_id, file_name, file_mimetype):
+        download_path = os.path.join(user_downloads_dir(), file_name)
         fh = io.FileIO(download_path, mode="wb")
 
         # File is a Google Workspace document
-        if "vnd.google-apps" in item_mimetype:
+        if "vnd.google-apps" in file_mimetype:
             req = self.service.files().export_media(
-                fileId=item_id, mimeType="application/pdf"
+                fileId=file_id, mimeType="application/pdf"
             )
         else:
-            req = self.service.files().get_media(fileId=item_id)
+            req = self.service.files().get_media(fileId=file_id)
 
         downloader = MediaIoBaseDownload(fh, req)
         done = False

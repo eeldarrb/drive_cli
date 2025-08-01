@@ -44,7 +44,9 @@ class Session:
                     if handler:
                         handler(self, *args)
                 except FileNotFoundError as e:
-                    print(f"[Not Found] Command '{cmd}': No such item: {e}")
+                    print(
+                        f"[Not Found] Command '{cmd}': No such file or directory: {e}"
+                    )
                 except HttpError as e:
                     error_code = e.status_code
                     print(
