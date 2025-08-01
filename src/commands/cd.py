@@ -7,11 +7,11 @@ def handle_cd(session, *args):
     parsed = parser.parse_args(args)
 
     directory_name = parsed.directory_name
-    for item in session.cwd.children:
+    for file in session.cwd.children:
         if (
-            item.name == directory_name
-            and item.mime_type == "application/vnd.google-apps.folder"
+            file.name == directory_name
+            and file.mime_type == "application/vnd.google-apps.folder"
         ):
-            session.cwd = item
+            session.cwd = file
             return
     raise FileNotFoundError(directory_name)

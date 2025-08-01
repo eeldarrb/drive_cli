@@ -1,8 +1,8 @@
-# TODO: handle getting item from paths
+# TODO: handle getting file from paths
 # Only searches in current directory
-def get_item_by_name(session, item_name):
-    items = session.cwd.children
-    for item in items:
-        if item.name == item_name:
-            return item
+def get_file_by_name(session, file_name):
+    files = session.cwd.children
+    for file in files:
+        if file.name == file_name:
+            return file
     return None
