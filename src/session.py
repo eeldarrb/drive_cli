@@ -2,7 +2,7 @@ import shlex
 from http import HTTPStatus
 from commands import command_map
 from auth.google_auth import get_auth_service
-from drive_tree.drive_tree import build_drive_tree
+from drive_tree.drive_tree import DriveTree
 from services.drive_client import DriveClient
 from google.auth.exceptions import GoogleAuthError
 from googleapiclient.http import HttpError
@@ -15,8 +15,8 @@ class Session:
     def __init__(self):
         try:
             self.client = DriveClient(get_auth_service)
-            self.drive_tree = build_drive_tree(self.client)
-            self.cwd = self.drive_tree
+            self.drive_tree = DriveTree(self.client)
+            self.cwd = self.drive_tree.root
         except GoogleAuthError:
             raise GoogleAuthError("Drive authentication failed.")
         except Exception:
