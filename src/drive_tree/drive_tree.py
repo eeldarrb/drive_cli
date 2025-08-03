@@ -37,7 +37,7 @@ class DriveTree:
         curr_node = starting_node if is_relative else self.root
 
         for path_part in path_parts:
-            if path_part == "" or path_part == ".":
+            if path_part in ["", "."]:
                 continue
             elif path_part == "..":
                 if curr_node.parent is None:
