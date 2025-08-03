@@ -29,5 +29,31 @@ class DriveTree:
                 parent_node = drive_nodes.get(parent_id)
                 if parent_node:
                     parent_node.add_child(node)
-
         return drive_nodes[root_id]
+
+    def get_node_by_path(self, starting_node, path):
+        path_parts = path.split("/")
+        is_relative = path_parts[0] != ""
+        curr_node = starting_node if is_relative else self.root
+
+        for path_part in path_parts:
+            if path_part == "" or path_part == ".":
+                continue
+            elif path_part == "..":
+                if curr_node.parent is None:
+                    raise FileNotFoundError(path)
+                curr_node = curr_node.parent
+            else:
+                found_node = next(
+                    (
+                        child_node
+                        for child_node in curr_node.children
+                        if child_node.name == path_part
+                    ),
+                    None,
+                )
+                if found_node is None:
+                    raise FileNotFoundError(path)
+                curr_node = found_node
+
+        return curr_node
