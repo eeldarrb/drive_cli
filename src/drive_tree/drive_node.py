@@ -3,7 +3,7 @@ class DriveNode:
         self.id = id
         self.name = name
         self.mime_type = mime_type
-        self.parent = []
+        self.parent = None
         self.children = []
 
     def is_folder(self):
