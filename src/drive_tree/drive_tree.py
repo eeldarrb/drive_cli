@@ -31,7 +31,8 @@ class DriveTree:
                     parent_node.add_child(node)
         return drive_nodes[root_id]
 
-    def get_node_by_path(self, starting_node, path):
+    # TODO: add require file enforcement to args
+    def get_node_by_path(self, starting_node, path, require_directory=False):
         path_parts = path.split("/")
         is_relative = path_parts[0] != ""
         curr_node = starting_node if is_relative else self.root
@@ -56,4 +57,6 @@ class DriveTree:
                     raise FileNotFoundError(path)
                 curr_node = found_node
 
+        if require_directory and not curr_node.is_folder():
+            raise NotADirectoryError(path)
         return curr_node
