@@ -7,14 +7,18 @@ def handle_mkdir(session, *args):
     parser.add_argument("directory_name")
     parsed = parser.parse_args(args)
 
-    directory_name = parsed.directory_name
     client = session.client
-    curr_dir = session.cwd
+    directory_path = parsed.directory_name
+    directory_path_parts = directory_path.rstrip("/").split("/")
+    path_to_dir = "/".join(directory_path_parts[0:-1])
+    directory_name = directory_path_parts[-1]
 
-    created_folder = client.create_dir(directory_name, curr_dir.id)
+    resolved_path = session.drive_tree.get_node_by_path(session.cwd, path_to_dir)
+
+    created_folder = client.create_dir(directory_name, resolved_path.id)
     new_dir = DriveNode(
         created_folder.get("id"),
         created_folder.get("name"),
         created_folder.get("mimeType"),
     )
-    curr_dir.add_child(new_dir)
+    resolved_path.add_child(new_dir)
