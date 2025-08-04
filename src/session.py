@@ -47,6 +47,8 @@ class Session:
                     print(
                         f"[Not Found] Command '{cmd}': No such file or directory: {e}"
                     )
+                except NotADirectoryError as e:
+                    print(f"[Error] Command '{cmd}': Not a directory: {e}")
                 except HttpError as e:
                     error_code = e.status_code
                     print(
