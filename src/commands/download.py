@@ -1,5 +1,4 @@
 import argparse
-from drive_tree import tree_utils
 
 
 def handle_download(session, *args):
@@ -7,11 +6,8 @@ def handle_download(session, *args):
     parser.add_argument("file_name")
     parsed = parser.parse_args(args)
 
-    file_name = parsed.file_name
     client = session.client
+    file_path = parsed.file_name
 
-    file = tree_utils.get_file_by_name(session, file_name)
-    if not file:
-        raise FileNotFoundError(file_name)
-
+    file = session.drive_tree.get_node_by_path(session.cwd, file_path)
     client.download_file(file.id, file.name, file.mime_type)
