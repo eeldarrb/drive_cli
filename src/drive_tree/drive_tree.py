@@ -33,14 +33,14 @@ class DriveTree:
 
     # TODO: add require file enforcement to args
     def get_node_by_path(self, starting_node, path, require_directory=False):
-        path_parts = path.split("/")
-        is_relative = path_parts[0] != ""
+        path_segments = path.split("/")
+        is_relative = path_segments[0] != ""
         curr_node = starting_node if is_relative else self.root
 
-        for path_part in path_parts:
-            if path_part in ["", "."]:
+        for path_segment in path_segments:
+            if path_segment in ["", "."]:
                 continue
-            elif path_part == "..":
+            elif path_segment == "..":
                 if curr_node.parent is None:
                     raise FileNotFoundError(path)
                 curr_node = curr_node.parent
@@ -49,7 +49,7 @@ class DriveTree:
                     (
                         child_node
                         for child_node in curr_node.children
-                        if child_node.name == path_part
+                        if child_node.name == path_segment
                     ),
                     None,
                 )
