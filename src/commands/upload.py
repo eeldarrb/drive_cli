@@ -10,7 +10,7 @@ def handle_upload(session, *args):
 
     file_path = parsed.file_name
     client = session.client
-    curr_dir = session.cwd
+    curr_dir = session.drive_tree.cwd
 
     if not os.path.exists(file_path):
         raise FileNotFoundError(file_path)

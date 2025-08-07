@@ -16,7 +16,6 @@ class Session:
         try:
             self.client = DriveClient(get_auth_service)
             self.drive_tree = DriveTree(self.client)
-            self.cwd = self.drive_tree.root
         except GoogleAuthError:
             raise GoogleAuthError("Drive authentication failed.")
         except Exception:

@@ -5,6 +5,7 @@ class DriveTree:
     def __init__(self, client):
         self.client = client
         self.root = self._build()
+        self.cwd = self.root
 
     def _build(self):
         all_files = self.client.list_all_files()

@@ -9,5 +9,5 @@ def handle_download(session, *args):
     client = session.client
     file_path = parsed.file_name
 
-    file = session.drive_tree.get_node_by_path(session.cwd, file_path)
+    file = session.drive_tree.get_node_by_path(session.drive_tree.cwd, file_path)
     client.download_file(file.id, file.name, file.mime_type)

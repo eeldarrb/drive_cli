@@ -7,7 +7,7 @@ def handle_ls(session, *args):
     parsed = parser.parse_args(args)
 
     path = parsed.path
-    resolved_path = session.drive_tree.get_node_by_path(session.cwd, path)
+    resolved_path = session.drive_tree.get_node_by_path(session.drive_tree.cwd, path)
 
     for file in resolved_path.children:
         print(file.name)

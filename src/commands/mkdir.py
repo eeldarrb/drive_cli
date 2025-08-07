@@ -13,7 +13,9 @@ def handle_mkdir(session, *args):
     *parent_path_segments, dir_name = input_path.split("/")
     parent_path = "/".join(parent_path_segments) if parent_path_segments else "."
 
-    parent_node = session.drive_tree.get_node_by_path(session.cwd, parent_path)
+    parent_node = session.drive_tree.get_node_by_path(
+        session.drive_tree.cwd, parent_path
+    )
 
     created_folder = client.create_dir(dir_name, parent_node.id)
     new_dir = DriveNode(
