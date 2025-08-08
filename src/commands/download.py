@@ -6,8 +6,5 @@ def handle_download(session, *args):
     parser.add_argument("file_name")
     parsed = parser.parse_args(args)
 
-    client = session.client
     file_path = parsed.file_name
-
-    file = session.drive_tree.get_node_by_path(session.drive_tree.cwd, file_path)
-    client.download_file(file.id, file.name, file.mime_type)
+    session.drive_tree.download(file_path)

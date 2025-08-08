@@ -6,8 +6,5 @@ def handle_cd(session, *args):
     parser.add_argument("directory_name")
     parsed = parser.parse_args(args)
 
-    directory_path = parsed.directory_name
-    session.drive_tree.cwd = session.drive_tree.get_node_by_path(
-        session.drive_tree.cwd, directory_path, require_directory=True
-    )
-    return
+    destination_path = parsed.directory_name
+    session.drive_tree.cd(destination_path)
