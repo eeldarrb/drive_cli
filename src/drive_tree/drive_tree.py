@@ -33,18 +33,12 @@ class DriveTree:
                     parent_node.add_child(node)
         return drive_nodes[root_id]
 
-    def cd(self, destination_path):
-        self.cwd = self.get_node_by_path(
-            self.cwd, destination_path, require_directory=True
-        )
-
-    def download(self, file_path):
-        file = self.get_node_by_path(self.cwd, file_path)
-        self.client.download_file(file.id, file.name, file.mime_type)
+    def cd(self, path):
+        self.cwd = self.get_node_by_path(self.cwd, path, require_dir=True)
 
     def ls(self, path):
-        resolved_node = self.get_node_by_path(self.cwd, path)
-        return resolved_node
+        file_node = self.get_node_by_path(self.cwd, path)
+        return file_node
 
     def mkdir(self, path):
         *parent_path_segments, dir_name = path.rstrip("/").split("/")
@@ -52,34 +46,38 @@ class DriveTree:
 
         parent_node = self.get_node_by_path(self.cwd, parent_path)
 
-        folder_info = self.client.create_dir(dir_name, parent_node.id)
-        new_dir = DriveNode(
-            folder_info.get("id"),
-            folder_info.get("name"),
-            folder_info.get("mimeType"),
+        file_info = self.client.create_dir(dir_name, parent_node.id)
+        file_node = DriveNode(
+            file_info.get("id"),
+            file_info.get("name"),
+            file_info.get("mimeType"),
         )
-        parent_node.add_child(new_dir)
+        parent_node.add_child(file_node)
 
-    def rm(self, file_path):
-        file = self.get_node_by_path(self.cwd, file_path)
-        self.client.delete_file(file.id)
-        file.detach()
+    def rm(self, path):
+        file_node = self.get_node_by_path(self.cwd, path)
+        self.client.delete_file(file_node.id)
+        file_node.detach()
 
-    def upload(self, file_path):
-        if not os.path.exists(file_path):
-            raise FileNotFoundError(file_path)
+    def download(self, path):
+        file_node = self.get_node_by_path(self.cwd, path)
+        self.client.download_file(file_node.id, file_node.name, file_node.mime_type)
 
-        uploaded_file = self.client.upload_file(file_path, self.cwd.id)
-        uploaded_file_node = DriveNode(
-            uploaded_file.get("id"),
-            uploaded_file.get("name"),
-            uploaded_file.get("mimeType"),
+    def upload(self, local_path):
+        if not os.path.exists(local_path):
+            raise FileNotFoundError(local_path)
+
+        file_info = self.client.upload_file(local_path, self.cwd.id)
+        file_node = DriveNode(
+            file_info.get("id"),
+            file_info.get("name"),
+            file_info.get("mimeType"),
         )
-        self.cwd.add_child(uploaded_file_node)
-        print(f"Successfully uploaded: {uploaded_file.get('name')}")
+        self.cwd.add_child(file_node)
+        print(f"Successfully uploaded: {file_info.get('name')}")
 
     # TODO: add require file enforcement to args
-    def get_node_by_path(self, starting_node, path, require_directory=False):
+    def get_node_by_path(self, starting_node, path, require_dir=False):
         path_segments = path.split("/")
         is_relative = path_segments[0] != ""
         curr_node = starting_node if is_relative else self.root
@@ -104,6 +102,6 @@ class DriveTree:
                     raise FileNotFoundError(path)
                 curr_node = found_node
 
-        if require_directory and not curr_node.is_folder():
+        if require_dir and not curr_node.is_folder():
             raise NotADirectoryError(path)
         return curr_node
