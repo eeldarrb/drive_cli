@@ -1,4 +1,3 @@
-import os
 from .drive_node import DriveNode
 
 
@@ -64,9 +63,6 @@ class DriveTree:
         self.client.download_file(file_node.id, file_node.name, file_node.mime_type)
 
     def upload(self, local_path):
-        if not os.path.exists(local_path):
-            raise FileNotFoundError(local_path)
-
         file_info = self.client.upload_file(local_path, self.cwd.id)
         file_node = DriveNode(
             file_info.get("id"),
@@ -74,7 +70,7 @@ class DriveTree:
             file_info.get("mimeType"),
         )
         self.cwd.add_child(file_node)
-        print(f"Successfully uploaded: {file_info.get('name')}")
+        return file_node
 
     # TODO: add require file enforcement to args
     def get_node_by_path(self, starting_node, path, require_dir=False):
