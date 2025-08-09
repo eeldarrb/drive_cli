@@ -1,7 +1,7 @@
 from .drive_node import DriveNode
 
 
-class DriveTree:
+class DriveVFS:
     def __init__(self, client):
         self.client = client
         self.root = self.__build()
