@@ -2,7 +2,7 @@ import shlex
 from http import HTTPStatus
 from commands import command_map
 from auth.google_auth import get_auth_service
-from drive_tree.drive_tree import DriveTree
+from vfs.drive_tree import DriveTree
 from services.drive_client import DriveClient
 from google.auth.exceptions import GoogleAuthError
 from googleapiclient.http import HttpError
