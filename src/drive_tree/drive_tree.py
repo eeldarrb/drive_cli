@@ -4,9 +4,10 @@ from .drive_node import DriveNode
 class DriveTree:
     def __init__(self, client):
         self.client = client
-        self.root = self._build()
+        self.root = self.__build()
+        self.cwd = self.root
 
-    def _build(self):
+    def __build(self):
         all_files = self.client.list_all_files()
         root_id = self.client.get_root_id()
 
@@ -31,11 +32,51 @@ class DriveTree:
                     parent_node.add_child(node)
         return drive_nodes[root_id]
 
+    def cd(self, path):
+        self.cwd = self._resolve_node_by_path(path, require_dir=True)
+
+    def ls(self, path):
+        file_node = self._resolve_node_by_path(path)
+        return file_node
+
+    def mkdir(self, path):
+        *parent_path_segments, dir_name = path.rstrip("/").split("/")
+        parent_path = "/".join(parent_path_segments) if parent_path_segments else "."
+
+        parent_node = self._resolve_node_by_path(parent_path)
+
+        file_info = self.client.create_dir(dir_name, parent_node.id)
+        file_node = DriveNode(
+            file_info.get("id"),
+            file_info.get("name"),
+            file_info.get("mimeType"),
+        )
+        parent_node.add_child(file_node)
+
+    def rm(self, path):
+        file_node = self._resolve_node_by_path(path)
+        self.client.delete_file(file_node.id)
+        file_node.detach()
+
+    def download(self, path):
+        file_node = self._resolve_node_by_path(path)
+        self.client.download_file(file_node.id, file_node.name, file_node.mime_type)
+
+    def upload(self, local_path):
+        file_info = self.client.upload_file(local_path, self.cwd.id)
+        file_node = DriveNode(
+            file_info.get("id"),
+            file_info.get("name"),
+            file_info.get("mimeType"),
+        )
+        self.cwd.add_child(file_node)
+        return file_node
+
     # TODO: add require file enforcement to args
-    def get_node_by_path(self, starting_node, path, require_directory=False):
+    def _resolve_node_by_path(self, path, require_dir=False):
         path_segments = path.split("/")
         is_relative = path_segments[0] != ""
-        curr_node = starting_node if is_relative else self.root
+        curr_node = self.cwd if is_relative else self.root
 
         for path_segment in path_segments:
             if path_segment in ["", "."]:
@@ -57,6 +98,6 @@ class DriveTree:
                     raise FileNotFoundError(path)
                 curr_node = found_node
 
-        if require_directory and not curr_node.is_folder():
+        if require_dir and not curr_node.is_folder():
             raise NotADirectoryError(path)
         return curr_node
