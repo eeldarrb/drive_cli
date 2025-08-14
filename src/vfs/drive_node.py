@@ -22,3 +22,11 @@ class DriveNode:
         if self.parent:
             self.parent.remove_child(self)
             self.parent = None
+
+    def get_path(self):
+        if self.parent is None:
+            return "/"
+        if self.parent.get_path() == "/":
+            return f"/{self.name}"
+
+        return f"{self.parent.get_path()}/{self.name}"
