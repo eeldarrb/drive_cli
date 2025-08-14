@@ -6,4 +6,4 @@ def handle_mkdir(session, *args):
     parser.add_argument("path")
     parsed = parser.parse_args(args)
 
-    session.drive_tree.mkdir(parsed.path)
+    session.vfs.mkdir(parsed.path)

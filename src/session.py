@@ -15,7 +15,7 @@ class Session:
     def __init__(self):
         try:
             self.client = DriveClient(get_auth_service)
-            self.drive_tree = DriveVFS(self.client)
+            self.vfs = DriveVFS(self.client)
         except GoogleAuthError:
             raise GoogleAuthError("Drive authentication failed.")
         except Exception:
@@ -24,7 +24,7 @@ class Session:
     def cli_loop(self):
         try:
             while True:
-                user_line = input(f"{self.drive_tree.cwd.get_path()} > ").strip()
+                user_line = input(f"{self.vfs.cwd.get_path()} > ").strip()
                 if not user_line:
                     continue
 

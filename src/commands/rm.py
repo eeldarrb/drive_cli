@@ -6,4 +6,4 @@ def handle_rm(session, *args):
     parser.add_argument("path")
     parsed = parser.parse_args(args)
 
-    session.drive_tree.rm(parsed.path)
+    session.vfs.rm(parsed.path)

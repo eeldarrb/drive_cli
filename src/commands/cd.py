@@ -6,4 +6,4 @@ def handle_cd(session, *args):
     parser.add_argument("path", nargs="?", default="/")
     parsed = parser.parse_args(args)
 
-    session.drive_tree.cd(parsed.path)
+    session.vfs.cd(parsed.path)

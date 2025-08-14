@@ -10,5 +10,5 @@ def handle_upload(session, *args):
     if not os.path.exists(parsed.local_path):
         raise FileNotFoundError(parsed.local_path)
 
-    file_node = session.drive_tree.upload(parsed.local_path)
+    file_node = session.vfs.upload(parsed.local_path)
     print(f"Successfully uploaded: {file_node.name}")
