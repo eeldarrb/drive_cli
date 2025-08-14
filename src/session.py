@@ -24,7 +24,7 @@ class Session:
     def cli_loop(self):
         try:
             while True:
-                user_line = input("> ").strip()
+                user_line = input(f"{self.drive_tree.cwd.get_path()} > ").strip()
                 if not user_line:
                     continue
 
