@@ -10,10 +10,11 @@ def create_completer(vfs, command_map):
         nonlocal completions
 
         if state == 0:
+            completions = []
             line_buffer = readline.get_line_buffer().lstrip()
             cmd, *args = shlex.split(line_buffer) if line_buffer else [""]
 
-            if cmd and not (args or line_buffer.endswith(" ")):
+            if not (args or line_buffer.endswith(" ")):
                 completions = [
                     f"{command_name} "
                     for command_name in command_map.keys()
