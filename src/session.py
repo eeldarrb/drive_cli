@@ -1,12 +1,15 @@
 import shlex
 from http import HTTPStatus
-from commands import command_map
-from auth.google_auth import get_auth_service
-from vfs.drive_vfs import DriveVFS
-from services.drive_client import DriveClient
+
 from google.auth.exceptions import GoogleAuthError
 from googleapiclient.http import HttpError
 from rapidfuzz import process
+
+from auth.google_auth import get_auth_service
+from autocomplete import create_completer, setup_autocomplete
+from commands import command_map
+from services.drive_client import DriveClient
+from vfs.drive_vfs import DriveVFS
 
 
 class Session:
@@ -22,6 +25,7 @@ class Session:
             raise RuntimeError("Session initialization failed.")
 
     def cli_loop(self):
+        setup_autocomplete(create_completer(self.vfs, command_map))
         try:
             while True:
                 user_line = input(f"{self.vfs.cwd.get_path()} > ").strip()
