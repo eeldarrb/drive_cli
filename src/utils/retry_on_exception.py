@@ -7,16 +7,16 @@ def retry_on_exception(max_attempts=2, delay=1):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             attempt = 0
-            http_err = None
+            caught_exception = None
             while attempt < max_attempts:
                 try:
                     return func(*args, **kwargs)
                 except Exception as e:
                     time.sleep(delay)
                     attempt += 1
-                    http_err = e
-            if http_err is not None:
-                raise http_err
+                    caught_exception = e
+            if caught_exception is not None:
+                raise caught_exception
 
         return wrapper
 
