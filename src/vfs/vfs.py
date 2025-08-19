@@ -1,13 +1,13 @@
 class VFS:
     def __init__(self, client, node_cls):
-        self.client = client
+        self._client = client
         self._node_cls = node_cls
         self.root = self.__build()
         self.cwd = self.root
 
     def __build(self):
-        all_files = self.client.list_all_files()
-        root_id = self.client.get_root_id()
+        all_files = self._client.list_all_files()
+        root_id = self._client.get_root_id()
 
         # Create dictionary of nodes using files
         drive_nodes = {
@@ -43,7 +43,7 @@ class VFS:
 
         parent_node = self._resolve_node_by_path(parent_path)
 
-        file_info = self.client.create_dir(dir_name, parent_node.id)
+        file_info = self._client.create_dir(dir_name, parent_node.id)
         file_node = self._node_cls(
             file_info.get("id"),
             file_info.get("name"),
@@ -53,15 +53,15 @@ class VFS:
 
     def rm(self, path):
         file_node = self._resolve_node_by_path(path)
-        self.client.delete_file(file_node.id)
+        self._client.delete_file(file_node.id)
         file_node.detach()
 
     def download(self, path):
         file_node = self._resolve_node_by_path(path)
-        self.client.download_file(file_node.id, file_node.name, file_node.mime_type)
+        self._client.download_file(file_node.id, file_node.name, file_node.mime_type)
 
     def upload(self, local_path):
-        file_info = self.client.upload_file(local_path, self.cwd.id)
+        file_info = self._client.upload_file(local_path, self.cwd.id)
         file_node = self._node_cls(
             file_info.get("id"),
             file_info.get("name"),
