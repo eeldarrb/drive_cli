@@ -1,9 +1,7 @@
-from .drive_node import DriveNode
-
-
-class DriveVFS:
-    def __init__(self, client):
+class VFS:
+    def __init__(self, client, node_cls):
         self.client = client
+        self._node_cls = node_cls
         self.root = self.__build()
         self.cwd = self.root
 
@@ -11,18 +9,18 @@ class DriveVFS:
         all_files = self.client.list_all_files()
         root_id = self.client.get_root_id()
 
-        # Create dictionairy of DriveNodes using files
+        # Create dictionary of nodes using files
         drive_nodes = {
-            file["id"]: DriveNode(
+            file["id"]: self._node_cls(
                 file.get("id"), file.get("name"), file.get("mimeType")
             )
             for file in all_files
         }
-        drive_nodes[root_id] = DriveNode(
-            root_id, "/", mime_type="application/vnd.google-apps.folder"
+        drive_nodes[root_id] = self._node_cls(
+            root_id, "/", mime_type=self._node_cls.folder_mimetype
         )
 
-        # Link DriveNodes together into tree
+        # Link nodes together into tree
         for file in all_files:
             node = drive_nodes.get(file.get("id"))
             parent_ids = file.get("parents", [])
@@ -46,7 +44,7 @@ class DriveVFS:
         parent_node = self._resolve_node_by_path(parent_path)
 
         file_info = self.client.create_dir(dir_name, parent_node.id)
-        file_node = DriveNode(
+        file_node = self._node_cls(
             file_info.get("id"),
             file_info.get("name"),
             file_info.get("mimeType"),
@@ -64,7 +62,7 @@ class DriveVFS:
 
     def upload(self, local_path):
         file_info = self.client.upload_file(local_path, self.cwd.id)
-        file_node = DriveNode(
+        file_node = self._node_cls(
             file_info.get("id"),
             file_info.get("name"),
             file_info.get("mimeType"),
@@ -73,7 +71,7 @@ class DriveVFS:
         return file_node
 
     # TODO: add require file enforcement to args
-    def _resolve_node_by_path(self, path, require_dir=False):
+    def _resolve_node_by_path(self, path, allow_partial=False, require_dir=False):
         path_segments = path.split("/")
         is_relative = path_segments[0] != ""
         curr_node = self.cwd if is_relative else self.root
@@ -95,6 +93,8 @@ class DriveVFS:
                     None,
                 )
                 if found_node is None:
+                    if allow_partial:
+                        break
                     raise FileNotFoundError(path)
                 curr_node = found_node
 

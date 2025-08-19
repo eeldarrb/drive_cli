@@ -9,7 +9,8 @@ from auth.google_auth import get_auth_service
 from autocomplete import create_completer, setup_autocomplete
 from commands import command_map
 from services.drive_client import DriveClient
-from vfs.drive_vfs import DriveVFS
+from vfs.drive_node import DriveNode
+from vfs.vfs import VFS
 
 
 class Session:
@@ -18,7 +19,7 @@ class Session:
     def __init__(self):
         try:
             self.client = DriveClient(get_auth_service)
-            self.vfs = DriveVFS(self.client)
+            self.vfs = VFS(self.client, DriveNode)
         except GoogleAuthError:
             raise GoogleAuthError("Drive authentication failed.")
         except Exception:
