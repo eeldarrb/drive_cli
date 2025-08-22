@@ -5,7 +5,7 @@ from google.auth.exceptions import GoogleAuthError
 from googleapiclient.http import HttpError
 from rapidfuzz import process
 
-from services.drive.google_auth import get_auth_service
+from services.drive.drive_auth import get_auth_service
 from services.drive.drive_client import DriveClient
 from autocomplete import create_completer, setup_autocomplete
 from commands import command_map
