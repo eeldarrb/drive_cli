@@ -5,10 +5,10 @@ from google.auth.exceptions import GoogleAuthError
 from googleapiclient.http import HttpError
 from rapidfuzz import process
 
-from auth.google_auth import get_auth_service
+from services.drive.drive_auth import get_auth_service
+from services.drive.drive_client import DriveClient
 from autocomplete import create_completer, setup_autocomplete
 from commands import command_map
-from services.drive_client import DriveClient
 from vfs.drive_node import DriveNode
 from vfs.vfs import VFS
 
